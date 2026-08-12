@@ -24,12 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="id" className={`${inter.variable} antialiased`}>
-        <body className="min-h-dvh flex flex-col bg-background text-foreground font-sans">
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="id" className={`${inter.variable} antialiased`}>
+      <body className="min-h-dvh flex flex-col bg-background text-foreground font-sans">
+        <ClerkProvider>{children}</ClerkProvider>
+      </body>
+    </html>
   );
 }
