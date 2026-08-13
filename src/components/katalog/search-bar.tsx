@@ -1,12 +1,13 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
 
 export function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [value, setValue] = useState(searchParams.get('q') ?? '');
   
   // Track initial mount to avoid firing push on mount
@@ -26,7 +27,7 @@ export function SearchBar() {
         params.delete('q');
       }
       params.delete('page'); // Reset to page 1 on new search
-      router.push(`/katalog?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`);
     }, 400);
 
     return () => clearTimeout(timeoutId);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 
@@ -12,6 +12,7 @@ type PaginationProps = {
 export function Pagination({ currentPage, totalPages }: PaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   if (totalPages <= 1) return null;
 
@@ -22,7 +23,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
     } else {
       params.delete('page');
     }
-    router.push(`/katalog?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   // Show max 5 page numbers with ellipsis

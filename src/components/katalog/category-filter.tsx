@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { ListFilter, ChevronDown } from 'lucide-react';
 import type { Category } from '@/src/db/schema';
 
@@ -11,6 +11,7 @@ type CategoryFilterProps = {
 export function CategoryFilter({ categories }: CategoryFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const current = searchParams.get('kategori') ?? '';
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -21,7 +22,7 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
       params.delete('kategori');
     }
     params.delete('page'); // Reset to page 1 on filter change
-    router.push(`/katalog?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
