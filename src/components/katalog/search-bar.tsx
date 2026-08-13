@@ -1,44 +1,40 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
 
 export function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [value, setValue] = useState(searchParams.get('q') ?? '');
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  // Track initial mount to avoid firing push on mount
+  const isInitialMount = useRef(true);
 
-  const updateParams = useCallback(
-    (newValue: string) => {
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString());
-      if (newValue) {
-        params.set('q', newValue);
+      if (value) {
+        params.set('q', value);
       } else {
         params.delete('q');
       }
       params.delete('page'); // Reset to page 1 on new search
       router.push(`/katalog?${params.toString()}`);
-    },
-    [router, searchParams]
-  );
-
-  // Debounce input — 400ms
-  useEffect(() => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      updateParams(value);
     }, 400);
 
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [value, updateParams]);
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]); // Only re-run when 'value' changes, NOT searchParams or router
 
   const handleClear = () => {
     setValue('');
-    updateParams('');
   };
 
   return (
@@ -48,7 +44,7 @@ export function SearchBar() {
         aria-hidden="true"
       />
       <input
-        type="search"
+        type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Cari judul atau penulis..."

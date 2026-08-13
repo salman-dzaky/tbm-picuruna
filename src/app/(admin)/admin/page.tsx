@@ -1,39 +1,50 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { Plus, BookOpen, BookX, Library } from 'lucide-react';
 import { db } from '@/src/db';
-import { books, categories } from '@/src/db/schema';
-import { eq, count, sql } from 'drizzle-orm';
+import { books } from '@/src/db/schema';
+import { eq, count } from 'drizzle-orm';
+import { getBooks, getCategories } from '@/src/db/queries';
 import { BookTable } from '@/src/components/admin/book-table';
+import { SearchBar } from '@/src/components/katalog/search-bar';
+import { CategoryFilter } from '@/src/components/katalog/category-filter';
+import { SortSelect } from '@/src/components/katalog/sort-select';
+import { Pagination } from '@/src/components/katalog/pagination';
 
 export const metadata = {
   title: 'Dashboard Admin',
 };
 
-export default async function AdminDashboard() {
-  // Parallel data fetch: stats + book list
+type AdminPageProps = {
+  searchParams: Promise<{
+    q?: string;
+    kategori?: string;
+    page?: string;
+    sort?: string;
+  }>;
+};
+
+export default async function AdminDashboard({ searchParams }: AdminPageProps) {
+  const params = await searchParams;
+
+  const search = params.q ?? '';
+  const category = params.kategori ?? '';
+  const sort = params.sort ?? 'newest';
+  const page = Math.max(1, parseInt(params.page ?? '1', 10) || 1);
+
+  // Parallel data fetch: stats + book list + categories
   const [
     [totalBooks],
     [availableBooks],
     [borrowedBooks],
-    bookList,
+    { books: bookList, pagination },
+    categories,
   ] = await Promise.all([
     db.select({ total: count() }).from(books),
     db.select({ total: count() }).from(books).where(eq(books.status, 'TERSEDIA')),
     db.select({ total: count() }).from(books).where(eq(books.status, 'DIPINJAM')),
-    db
-      .select({
-        id: books.id,
-        title: books.title,
-        author: books.author,
-        status: books.status,
-        coverUrl: books.coverUrl,
-        locationRack: books.locationRack,
-        categoryName: categories.name,
-      })
-      .from(books)
-      .leftJoin(categories, eq(books.categoryId, categories.id))
-      .orderBy(sql`${books.createdAt} DESC`)
-      .limit(50),
+    getBooks({ search, category, page, sort }),
+    getCategories(),
   ]);
 
   const stats = [
@@ -103,8 +114,31 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
+      {/* Filters Bar */}
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center">
+        <Suspense fallback={null}>
+          <SearchBar />
+        </Suspense>
+        <Suspense fallback={null}>
+          <CategoryFilter categories={categories} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SortSelect />
+        </Suspense>
+      </div>
+
       {/* Book Table */}
       <BookTable books={bookList} />
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <Suspense fallback={null}>
+          <Pagination
+            currentPage={pagination.page}
+            totalPages={pagination.totalPages}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

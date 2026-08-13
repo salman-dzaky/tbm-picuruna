@@ -13,6 +13,7 @@ import { eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { generateBookId } from '@/src/lib/nanoid';
 import { z } from 'zod';
+import { auth } from '@clerk/nextjs/server';
 
 // ============================================================
 // ZOD VALIDATION SCHEMA
@@ -56,6 +57,8 @@ export type ActionResult = {
 // ============================================================
 
 export async function createBook(formData: FormData): Promise<ActionResult> {
+  await auth.protect();
+  
   const raw = Object.fromEntries(formData.entries());
   const parsed = bookSchema.safeParse(raw);
 
@@ -109,6 +112,8 @@ export async function updateBook(
   id: string,
   formData: FormData
 ): Promise<ActionResult> {
+  await auth.protect();
+
   const raw = Object.fromEntries(formData.entries());
   const parsed = bookSchema.safeParse(raw);
 
@@ -162,6 +167,8 @@ export async function updateBook(
 // ============================================================
 
 export async function deleteBook(id: string): Promise<ActionResult> {
+  await auth.protect();
+
   try {
     // Get the book first to check for Cloudinary asset
     const book = await db.query.books.findFirst({

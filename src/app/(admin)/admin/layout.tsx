@@ -1,10 +1,13 @@
 import { UserButton } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await auth.protect();
+
   return (
     <div className="flex min-h-dvh flex-col">
       {/* Admin Header */}

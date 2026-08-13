@@ -1,6 +1,6 @@
 import { db } from '.';
 import { books, categories } from './schema';
-import { eq, like, or, and, desc, count } from 'drizzle-orm';
+import { eq, like, or, and, desc, asc, count } from 'drizzle-orm';
 
 export const BOOKS_PER_PAGE = 12;
 
@@ -11,13 +11,14 @@ export async function getCategories() {
   });
 }
 
-/** Ambil buku dengan filter, pencarian, dan paginasi */
+/** Ambil buku dengan filter, pencarian, pengurutan, dan paginasi */
 export async function getBooks(opts: {
   search?: string;
   category?: string;
   page?: number;
+  sort?: string;
 }) {
-  const { search, category, page = 1 } = opts;
+  const { search, category, page = 1, sort = 'newest' } = opts;
   const offset = (page - 1) * BOOKS_PER_PAGE;
 
   // Build WHERE conditions
@@ -44,6 +45,32 @@ export async function getBooks(opts: {
       : and(...conditions)
     : undefined;
 
+  // Determine sorting
+  let orderByClause = desc(books.createdAt); // Default: newest
+  switch (sort) {
+    case 'oldest':
+      orderByClause = asc(books.createdAt);
+      break;
+    case 'title_asc':
+      orderByClause = asc(books.title);
+      break;
+    case 'title_desc':
+      orderByClause = desc(books.title);
+      break;
+    case 'author_asc':
+      orderByClause = asc(books.author);
+      break;
+    case 'author_desc':
+      orderByClause = desc(books.author);
+      break;
+    case 'year_asc':
+      orderByClause = asc(books.publicationYear);
+      break;
+    case 'year_desc':
+      orderByClause = desc(books.publicationYear);
+      break;
+  }
+
   // Parallel queries: data + count
   const [data, totalResult] = await Promise.all([
     db
@@ -57,11 +84,12 @@ export async function getBooks(opts: {
         coverUrl: books.coverUrl,
         categoryId: books.categoryId,
         categoryName: categories.name,
+        locationRack: books.locationRack,
       })
       .from(books)
       .leftJoin(categories, eq(books.categoryId, categories.id))
       .where(whereClause)
-      .orderBy(desc(books.createdAt))
+      .orderBy(orderByClause)
       .limit(BOOKS_PER_PAGE)
       .offset(offset),
     db

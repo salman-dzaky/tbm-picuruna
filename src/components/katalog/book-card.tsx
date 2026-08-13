@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { CldImage } from 'next-cloudinary';
 import { BookOpen } from 'lucide-react';
 import { StatusBadge } from '@/src/components/ui/status-badge';
@@ -20,9 +21,10 @@ type BookCardProps = {
 
 export function BookCard({ book }: BookCardProps) {
   return (
-    <article
-      className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow duration-200 hover:shadow-md"
-    >
+    <Link href={`/katalog/${book.id}`} className="block h-full">
+      <article
+        className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow duration-200 hover:shadow-md"
+      >
       {/* Cover Image / Placeholder */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-secondary">
         {book.coverUrl ? (
@@ -74,5 +76,6 @@ export function BookCard({ book }: BookCardProps) {
         </div>
       </div>
     </article>
+    </Link>
   );
 }

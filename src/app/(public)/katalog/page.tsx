@@ -3,6 +3,7 @@ import { getBooks, getCategories } from '@/src/db/queries';
 import { BookGrid } from '@/src/components/katalog/book-grid';
 import { SearchBar } from '@/src/components/katalog/search-bar';
 import { CategoryFilter } from '@/src/components/katalog/category-filter';
+import { SortSelect } from '@/src/components/katalog/sort-select';
 import { Pagination } from '@/src/components/katalog/pagination';
 import { Library } from 'lucide-react';
 
@@ -17,6 +18,7 @@ type KatalogPageProps = {
     q?: string;
     kategori?: string;
     page?: string;
+    sort?: string;
   }>;
 };
 
@@ -25,11 +27,12 @@ export default async function KatalogPage({ searchParams }: KatalogPageProps) {
 
   const search = params.q ?? '';
   const category = params.kategori ?? '';
+  const sort = params.sort ?? 'newest';
   const page = Math.max(1, parseInt(params.page ?? '1', 10) || 1);
 
   // Parallel data fetching
   const [{ books, pagination }, categories] = await Promise.all([
-    getBooks({ search, category, page }),
+    getBooks({ search, category, page, sort }),
     getCategories(),
   ]);
 
@@ -60,6 +63,9 @@ export default async function KatalogPage({ searchParams }: KatalogPageProps) {
         </Suspense>
         <Suspense fallback={null}>
           <CategoryFilter categories={categories} />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SortSelect />
         </Suspense>
       </div>
 

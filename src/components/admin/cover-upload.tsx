@@ -55,6 +55,10 @@ export function CoverUpload({
             folder: 'tbm-picuruna/covers',
             resourceType: 'image',
             clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+            cropping: true,
+            croppingAspectRatio: 0.75, // 3:4 aspect ratio
+            croppingShowDimensions: true,
+            croppingDefaultSelectionRatio: 0.75,
           }}
           onSuccess={(result, { widget }) => {
             if (
@@ -88,8 +92,10 @@ export function CoverUpload({
         </CldUploadWidget>
       )}
 
-      <p className="text-xs text-muted-foreground">
-        Format: JPG, PNG, WebP. Maks. 2MB.
+      <p className="text-xs text-muted-foreground leading-relaxed">
+        Format: JPG, PNG, WebP. Maks. 2MB. <br />
+        Rasio ideal: <strong>3:4</strong> (Misal: 600x800px). <br />
+        <em>Anda dapat memotong gambar langsung setelah memilih file.</em>
       </p>
     </div>
   );
