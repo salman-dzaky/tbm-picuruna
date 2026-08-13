@@ -1,0 +1,206 @@
+'use server';
+
+/**
+ * Server Actions — CRUD Buku
+ *
+ * Semua operasi mutasi database berjalan di server.
+ * Dilindungi oleh Clerk middleware (hanya admin yang bisa akses /admin).
+ */
+
+import { db } from '@/src/db';
+import { books } from '@/src/db/schema';
+import { eq, sql } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { generateBookId } from '@/src/lib/nanoid';
+import { z } from 'zod';
+
+// ============================================================
+// ZOD VALIDATION SCHEMA
+// ============================================================
+
+const bookSchema = z.object({
+  title: z.string().min(1, 'Judul buku wajib diisi').max(255),
+  author: z.string().max(255).optional().or(z.literal('')),
+  illustrator: z.string().max(255).optional().or(z.literal('')),
+  publisher: z.string().max(255).optional().or(z.literal('')),
+  publicationYear: z
+    .union([z.coerce.number().int().min(1800).max(new Date().getFullYear()), z.literal(0), z.nan()])
+    .optional()
+    .transform((v) => (v && !isNaN(v) && v > 0 ? v : null)),
+  numberOfCopies: z.coerce.number().int().min(1).default(1),
+  subject: z.string().max(255).optional().or(z.literal('')),
+  origin: z.string().max(255).optional().or(z.literal('')),
+  isbn: z.string().max(20).optional().or(z.literal('')),
+  synopsis: z.string().max(2000).optional().or(z.literal('')),
+  categoryId: z.string().min(1, 'Kategori wajib dipilih'),
+  locationRack: z.string().max(50).optional().or(z.literal('')),
+  callNumber: z.string().max(50).optional().or(z.literal('')),
+  inventoryNumber: z.string().max(50).optional().or(z.literal('')),
+  status: z.enum(['TERSEDIA', 'DIPINJAM']).default('TERSEDIA'),
+  coverUrl: z.string().url().optional().or(z.literal('')).or(z.literal(undefined)),
+  coverPublicId: z.string().optional().or(z.literal('')).or(z.literal(undefined)),
+});
+
+// ============================================================
+// RESPONSE TYPE
+// ============================================================
+
+export type ActionResult = {
+  success: boolean;
+  message: string;
+  errors?: Record<string, string[]>;
+};
+
+// ============================================================
+// CREATE BOOK
+// ============================================================
+
+export async function createBook(formData: FormData): Promise<ActionResult> {
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = bookSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: 'Data tidak valid. Periksa kembali formulir.',
+      errors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
+    };
+  }
+
+  const data = parsed.data;
+
+  try {
+    await db.insert(books).values({
+      id: generateBookId(),
+      title: data.title,
+      author: data.author || null,
+      illustrator: data.illustrator || null,
+      publisher: data.publisher || null,
+      publicationYear: data.publicationYear ?? null,
+      numberOfCopies: data.numberOfCopies,
+      subject: data.subject || null,
+      origin: data.origin || null,
+      isbn: data.isbn || null,
+      synopsis: data.synopsis || null,
+      categoryId: data.categoryId,
+      locationRack: data.locationRack || null,
+      callNumber: data.callNumber || null,
+      inventoryNumber: data.inventoryNumber || null,
+      status: data.status,
+      coverUrl: data.coverUrl || null,
+      coverPublicId: data.coverPublicId || null,
+    });
+
+    revalidatePath('/admin');
+    revalidatePath('/katalog');
+
+    return { success: true, message: 'Buku berhasil ditambahkan.' };
+  } catch (error) {
+    console.error('Create book error:', error);
+    return { success: false, message: 'Gagal menambahkan buku. Silakan coba lagi.' };
+  }
+}
+
+// ============================================================
+// UPDATE BOOK
+// ============================================================
+
+export async function updateBook(
+  id: string,
+  formData: FormData
+): Promise<ActionResult> {
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = bookSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: 'Data tidak valid. Periksa kembali formulir.',
+      errors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
+    };
+  }
+
+  const data = parsed.data;
+
+  try {
+    await db
+      .update(books)
+      .set({
+        title: data.title,
+        author: data.author || null,
+        illustrator: data.illustrator || null,
+        publisher: data.publisher || null,
+        publicationYear: data.publicationYear ?? null,
+        numberOfCopies: data.numberOfCopies,
+        subject: data.subject || null,
+        origin: data.origin || null,
+        isbn: data.isbn || null,
+        synopsis: data.synopsis || null,
+        categoryId: data.categoryId,
+        locationRack: data.locationRack || null,
+        callNumber: data.callNumber || null,
+        inventoryNumber: data.inventoryNumber || null,
+        status: data.status,
+        coverUrl: data.coverUrl || null,
+        coverPublicId: data.coverPublicId || null,
+        updatedAt: sql`(CURRENT_TIMESTAMP)`,
+      })
+      .where(eq(books.id, id));
+
+    revalidatePath('/admin');
+    revalidatePath('/katalog');
+
+    return { success: true, message: 'Buku berhasil diperbarui.' };
+  } catch (error) {
+    console.error('Update book error:', error);
+    return { success: false, message: 'Gagal memperbarui buku. Silakan coba lagi.' };
+  }
+}
+
+// ============================================================
+// DELETE BOOK
+// ============================================================
+
+export async function deleteBook(id: string): Promise<ActionResult> {
+  try {
+    // Get the book first to check for Cloudinary asset
+    const book = await db.query.books.findFirst({
+      where: (books, { eq }) => eq(books.id, id),
+      columns: { coverPublicId: true },
+    });
+
+    if (!book) {
+      return { success: false, message: 'Buku tidak ditemukan.' };
+    }
+
+    // Delete from database
+    await db.delete(books).where(eq(books.id, id));
+
+    // If book has a Cloudinary cover, delete it too
+    if (book.coverPublicId) {
+      try {
+        const { v2: cloudinary } = await import('cloudinary');
+        cloudinary.config({
+          cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+          api_key: process.env.CLOUDINARY_API_KEY,
+          api_secret: process.env.CLOUDINARY_API_SECRET,
+        });
+        await cloudinary.uploader.destroy(book.coverPublicId, {
+          resource_type: 'image',
+          invalidate: true,
+        });
+      } catch (cloudinaryError) {
+        // Log but don't fail — the DB record is already deleted
+        console.error('Cloudinary delete error:', cloudinaryError);
+      }
+    }
+
+    revalidatePath('/admin');
+    revalidatePath('/katalog');
+
+    return { success: true, message: 'Buku berhasil dihapus.' };
+  } catch (error) {
+    console.error('Delete book error:', error);
+    return { success: false, message: 'Gagal menghapus buku. Silakan coba lagi.' };
+  }
+}

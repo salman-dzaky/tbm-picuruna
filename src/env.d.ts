@@ -13,6 +13,8 @@ declare namespace NodeJS {
     // Cloudinary
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: string;
     NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string;
   }
 }
 
