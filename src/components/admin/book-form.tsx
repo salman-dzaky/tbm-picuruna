@@ -225,7 +225,7 @@ export function BookForm({ categories, book, action }: BookFormProps) {
                 name="locationRack"
                 defaultValue={book?.locationRack ?? ''}
                 className={inputClass}
-                placeholder="cth: Rak A-01"
+                placeholder="cth: Rak A-01 atau Baris Atas"
               />
             </div>
             <div>
@@ -238,7 +238,7 @@ export function BookForm({ categories, book, action }: BookFormProps) {
                 name="callNumber"
                 defaultValue={book?.callNumber ?? ''}
                 className={inputClass}
-                placeholder="cth: 899.221/HIR/l"
+                placeholder="cth: 813 EMI i"
               />
             </div>
             <div>
@@ -268,7 +268,7 @@ export function BookForm({ categories, book, action }: BookFormProps) {
                 name="subject"
                 defaultValue={book?.subject ?? ''}
                 className={inputClass}
-                placeholder="cth: Novel Indonesia"
+                placeholder="cth: Ekonomi Makro"
               />
             </div>
             <div>
@@ -281,7 +281,7 @@ export function BookForm({ categories, book, action }: BookFormProps) {
                 name="origin"
                 defaultValue={book?.origin ?? ''}
                 className={inputClass}
-                placeholder="cth: Sumbangan Warga"
+                placeholder="cth: Sumbangan Warga atau Perpusnas"
               />
             </div>
           </div>

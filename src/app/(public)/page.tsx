@@ -82,7 +82,7 @@ export default function HomePage() {
               {
                 icon: BookOpen,
                 label: 'Koleksi Buku',
-                value: '500+',
+                value: '1000+',
                 desc: 'Beragam genre & kategori',
               },
               {
