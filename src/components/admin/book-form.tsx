@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, ChevronDown } from 'lucide-react';
 import { CoverUpload } from './cover-upload';
 import { cn } from '@/src/lib/utils';
 import type { Book, Category } from '@/src/db/schema';
@@ -148,20 +148,23 @@ export function BookForm({ categories, book, action }: BookFormProps) {
               <label htmlFor="categoryId" className={labelClass}>
                 Kategori <span className="text-destructive">*</span>
               </label>
-              <select
-                id="categoryId"
-                name="categoryId"
-                defaultValue={book?.categoryId ?? ''}
-                required
-                className={cn(inputClass, 'cursor-pointer appearance-none')}
-              >
-                <option value="">Pilih kategori</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  id="categoryId"
+                  name="categoryId"
+                  defaultValue={book?.categoryId ?? ''}
+                  required
+                  className={cn(inputClass, 'cursor-pointer appearance-none pr-10')}
+                >
+                  <option value="">Pilih kategori</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              </div>
               {state.errors?.categoryId && (
                 <p className={errorClass}>{state.errors.categoryId[0]}</p>
               )}
@@ -170,15 +173,18 @@ export function BookForm({ categories, book, action }: BookFormProps) {
               <label htmlFor="status" className={labelClass}>
                 Status
               </label>
-              <select
-                id="status"
-                name="status"
-                defaultValue={book?.status ?? 'TERSEDIA'}
-                className={cn(inputClass, 'cursor-pointer appearance-none')}
-              >
-                <option value="TERSEDIA">Tersedia</option>
-                <option value="DIPINJAM">Dipinjam</option>
-              </select>
+              <div className="relative">
+                <select
+                  id="status"
+                  name="status"
+                  defaultValue={book?.status ?? 'TERSEDIA'}
+                  className={cn(inputClass, 'cursor-pointer appearance-none pr-10')}
+                >
+                  <option value="TERSEDIA">Tersedia</option>
+                  <option value="DIPINJAM">Dipinjam</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              </div>
             </div>
           </div>
 

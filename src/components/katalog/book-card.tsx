@@ -1,3 +1,6 @@
+'use client';
+
+import { CldImage } from 'next-cloudinary';
 import { BookOpen } from 'lucide-react';
 import { StatusBadge } from '@/src/components/ui/status-badge';
 import { cn } from '@/src/lib/utils';
@@ -23,11 +26,12 @@ export function BookCard({ book }: BookCardProps) {
       {/* Cover Image / Placeholder */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-secondary">
         {book.coverUrl ? (
-          <img
+          <CldImage
             src={book.coverUrl}
             alt={`Sampul buku ${book.title}`}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-secondary to-muted p-4">

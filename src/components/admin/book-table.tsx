@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { CldImage } from 'next-cloudinary';
 import { Pencil, BookOpen } from 'lucide-react';
 import { StatusBadge } from '@/src/components/ui/status-badge';
 import { DeleteDialog } from './delete-dialog';
@@ -68,11 +71,15 @@ export function BookTable({ books }: BookTableProps) {
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     {book.coverUrl ? (
-                      <img
-                        src={book.coverUrl}
-                        alt=""
-                        className="hidden h-10 w-7 shrink-0 rounded border border-border object-cover sm:block"
-                      />
+                      <div className="hidden relative h-10 w-7 shrink-0 sm:block">
+                        <CldImage
+                          src={book.coverUrl}
+                          alt=""
+                          fill
+                          sizes="30px"
+                          className="rounded border border-border object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="hidden h-10 w-7 shrink-0 items-center justify-center rounded border border-border bg-secondary sm:flex">
                         <BookOpen className="h-3.5 w-3.5 text-muted-foreground/50" />
