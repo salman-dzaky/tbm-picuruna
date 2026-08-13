@@ -54,7 +54,12 @@ body {
 }
 
 /* --- Focus ring utility --- */
-*:focus-visible {
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
   outline: 2px solid var(--color-ring);
   outline-offset: 2px;
 }

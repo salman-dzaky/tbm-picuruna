@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { Plus, BookOpen, BookX, Library } from 'lucide-react';
+import { Plus, BookOpen, BookX, Library, Tags } from 'lucide-react';
 import { db } from '@/src/db';
 import { books } from '@/src/db/schema';
 import { eq, count } from 'drizzle-orm';
@@ -83,13 +83,22 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
             Kelola koleksi buku Taman Baca Masyarakat Picuruna.
           </p>
         </div>
-        <Link
-          href="/admin/buku/baru"
-          className="inline-flex h-9 items-center gap-2 self-start rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-green-700"
-        >
-          <Plus className="h-4 w-4" />
-          Tambah Buku
-        </Link>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Link
+            href="/admin/kategori"
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium text-card-foreground shadow-sm transition-colors hover:bg-secondary"
+          >
+            <Tags className="h-4 w-4" />
+            Kelola Kategori
+          </Link>
+          <Link
+            href="/admin/buku/baru"
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-green-700"
+          >
+            <Plus className="h-4 w-4" />
+            Tambah Buku
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
