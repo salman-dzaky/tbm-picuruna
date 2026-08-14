@@ -164,7 +164,7 @@ export function CategoryManager({ categories, filters, pagination }: CategoryMan
       {/* Right Column: Filters and List Section */}
       <div className="flex flex-col gap-4 lg:col-span-2">
         {filters && (
-          <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center shadow-sm">
+          <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:flex-wrap sm:items-center shadow-sm">
             {filters}
           </div>
         )}

@@ -62,14 +62,14 @@ export function BookCard({ book }: BookCardProps) {
           </p>
         )}
 
-        <div className="mt-auto flex items-center justify-between pt-2">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-2">
           {book.categoryName && (
-            <span className="rounded-md bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
+            <span className="truncate rounded-md bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
               {book.categoryName}
             </span>
           )}
           {book.publicationYear && (
-            <span className="text-[11px] text-muted-foreground">
+            <span className="shrink-0 text-[11px] text-muted-foreground">
               {book.publicationYear}
             </span>
           )}

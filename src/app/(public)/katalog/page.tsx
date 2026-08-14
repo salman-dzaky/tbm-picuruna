@@ -57,7 +57,7 @@ export default async function KatalogPage({ searchParams }: KatalogPageProps) {
       </div>
 
       {/* Filters Bar */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Suspense fallback={null}>
           <SearchBar />
         </Suspense>

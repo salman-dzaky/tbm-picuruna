@@ -133,7 +133,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
             <h2 className="mb-3 text-lg font-bold text-foreground">Sinopsis</h2>
             {book.synopsis ? (
               <div className="prose prose-sm max-w-none text-muted-foreground">
-                <p className="leading-relaxed">{book.synopsis}</p>
+                <p className="whitespace-pre-wrap leading-relaxed">{book.synopsis}</p>
               </div>
             ) : (
               <p className="text-sm italic text-muted-foreground">
