@@ -16,6 +16,27 @@ import { z } from 'zod';
 import { auth } from '@clerk/nextjs/server';
 
 // ============================================================
+// CLOUDINARY HELPER
+// ============================================================
+
+async function deleteCloudinaryImage(publicId: string) {
+  try {
+    const { v2: cloudinary } = await import('cloudinary');
+    cloudinary.config({
+      cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: 'image',
+      invalidate: true,
+    });
+  } catch (error) {
+    console.error('Cloudinary delete error:', error);
+  }
+}
+
+// ============================================================
 // ZOD VALIDATION SCHEMA
 // ============================================================
 
@@ -128,6 +149,12 @@ export async function updateBook(
   const data = parsed.data;
 
   try {
+    // Check existing book for old cover
+    const existingBook = await db.query.books.findFirst({
+      where: (books, { eq }) => eq(books.id, id),
+      columns: { coverPublicId: true },
+    });
+
     await db
       .update(books)
       .set({
@@ -151,6 +178,14 @@ export async function updateBook(
         updatedAt: sql`(CURRENT_TIMESTAMP)`,
       })
       .where(eq(books.id, id));
+
+    // Delete old image from Cloudinary if it was changed or removed
+    if (
+      existingBook?.coverPublicId &&
+      existingBook.coverPublicId !== data.coverPublicId
+    ) {
+      await deleteCloudinaryImage(existingBook.coverPublicId);
+    }
 
     revalidatePath('/admin');
     revalidatePath('/katalog');
@@ -185,21 +220,7 @@ export async function deleteBook(id: string): Promise<ActionResult> {
 
     // If book has a Cloudinary cover, delete it too
     if (book.coverPublicId) {
-      try {
-        const { v2: cloudinary } = await import('cloudinary');
-        cloudinary.config({
-          cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-          api_key: process.env.CLOUDINARY_API_KEY,
-          api_secret: process.env.CLOUDINARY_API_SECRET,
-        });
-        await cloudinary.uploader.destroy(book.coverPublicId, {
-          resource_type: 'image',
-          invalidate: true,
-        });
-      } catch (cloudinaryError) {
-        // Log but don't fail — the DB record is already deleted
-        console.error('Cloudinary delete error:', cloudinaryError);
-      }
+      await deleteCloudinaryImage(book.coverPublicId);
     }
 
     revalidatePath('/admin');
