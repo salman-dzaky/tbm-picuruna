@@ -3,8 +3,13 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
+import { cn } from '@/src/lib/utils';
 
-export function SearchBar() {
+interface SearchBarProps {
+  className?: string;
+}
+
+export function SearchBar({ className }: SearchBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -39,7 +44,7 @@ export function SearchBar() {
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className={cn("relative w-full max-w-md", className)}>
       <Search
         className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
         aria-hidden="true"

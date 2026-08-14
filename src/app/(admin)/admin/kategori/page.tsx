@@ -50,29 +50,29 @@ export default async function AdminKategoriPage({ searchParams }: AdminKategoriP
         </div>
       </div>
 
-      {/* Filters Bar */}
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center lg:w-2/3 ml-auto">
-        <Suspense fallback={null}>
-          <SearchBar />
-        </Suspense>
-        <Suspense fallback={null}>
-          <CategorySortSelect />
-        </Suspense>
-      </div>
-
-      <CategoryManager categories={categories} />
-
-      {/* Pagination */}
-      {pagination.totalPages > 1 && (
-        <div className="flex justify-end lg:w-2/3 ml-auto">
-          <Suspense fallback={null}>
-            <Pagination
-              currentPage={pagination.page}
-              totalPages={pagination.totalPages}
-            />
-          </Suspense>
-        </div>
-      )}
+      <CategoryManager 
+        categories={categories} 
+        filters={
+          <>
+            <Suspense fallback={null}>
+              <SearchBar className="flex-1 max-w-none" />
+            </Suspense>
+            <Suspense fallback={null}>
+              <CategorySortSelect />
+            </Suspense>
+          </>
+        }
+        pagination={
+          pagination.totalPages > 1 ? (
+            <Suspense fallback={null}>
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.totalPages}
+              />
+            </Suspense>
+          ) : undefined
+        }
+      />
     </div>
   );
 }

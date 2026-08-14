@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, useRef } from 'react';
 import { Pencil, Plus, Loader2, CheckCircle2, Trash2 } from 'lucide-react';
 import type { Category } from '@/src/db/schema';
 import { createCategory, updateCategory } from '@/src/app/(admin)/admin/kategori/actions';
@@ -10,9 +10,11 @@ import { cn } from '@/src/lib/utils';
 
 type CategoryManagerProps = {
   categories: Category[];
+  filters?: React.ReactNode;
+  pagination?: React.ReactNode;
 };
 
-export function CategoryManager({ categories }: CategoryManagerProps) {
+export function CategoryManager({ categories, filters, pagination }: CategoryManagerProps) {
   const [isPending, startTransition] = useTransition();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -20,6 +22,8 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
   // Feedback state
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Auto-hide success message
   useEffect(() => {
@@ -40,8 +44,18 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
     setName(category.name);
     setError(null);
     setSuccessMsg(null);
-    // Scroll to top on mobile so they see the form
+    
+    // Scroll to top on mobile and autofocus the input
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      const input = inputRef.current;
+      if (input) {
+        input.focus();
+        // Force cursor to the end of the text
+        const length = input.value.length;
+        input.setSelectionRange(length, length);
+      }
+    }, 100);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,6 +101,7 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
               Nama Kategori
             </label>
             <input
+              ref={inputRef}
               type="text"
               id="name"
               value={name}
@@ -146,11 +161,18 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
         </form>
       </div>
 
-      {/* List Section */}
-      <div className="rounded-xl border border-border bg-card shadow-sm lg:col-span-2">
-        <div className="p-6">
-          <h2 className="mb-4 text-lg font-semibold text-card-foreground">Daftar Kategori</h2>
-          {categories.length === 0 ? (
+      {/* Right Column: Filters and List Section */}
+      <div className="flex flex-col gap-4 lg:col-span-2">
+        {filters && (
+          <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center shadow-sm">
+            {filters}
+          </div>
+        )}
+
+        <div className="rounded-xl border border-border bg-card shadow-sm">
+          <div className="p-6">
+            <h2 className="mb-4 text-lg font-semibold text-card-foreground">Daftar Kategori</h2>
+            {categories.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <p className="text-sm text-muted-foreground">Tidak ada kategori yang ditemukan.</p>
             </div>
@@ -205,6 +227,12 @@ export function CategoryManager({ categories }: CategoryManagerProps) {
           )}
         </div>
       </div>
+      {pagination && (
+        <div className="flex justify-end">
+          {pagination}
+        </div>
+      )}
+    </div>
     </div>
   );
 }

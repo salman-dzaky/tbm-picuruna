@@ -167,6 +167,70 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== GALERI KEGIATAN ===== */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-screen-xl px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center mb-10">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Galeri Kegiatan
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Momen-momen inspiratif, ruang baca, dan kegiatan literasi bersama masyarakat di TBM Picuruna.
+            </p>
+          </div>
+          
+          {/* Aesthetic Bento Grid - Responsive */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:grid-rows-[250px_250px] sm:gap-4">
+            {/* Foto Utama (Large) - 1:1 / 4:3 */}
+            <div className="group relative col-span-2 row-span-2 overflow-hidden rounded-2xl bg-secondary shadow-sm">
+              <img 
+                src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop" 
+                alt="Ruang baca utama TBM" 
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            </div>
+            
+            {/* Foto Kecil 1 (Top Right 1) */}
+            <div className="group relative col-span-2 sm:col-span-1 overflow-hidden rounded-2xl bg-secondary shadow-sm">
+              <img 
+                src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop" 
+                alt="Koleksi buku bacaan" 
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+            
+            {/* Foto Kecil 2 (Top Right 2) */}
+            <div className="group relative col-span-2 sm:col-span-1 overflow-hidden rounded-2xl bg-secondary shadow-sm">
+              <img 
+                src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop" 
+                alt="Kegiatan literasi" 
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+            
+            {/* Foto Medium (Bottom Right) - 16:9 / Landscape */}
+            <div className="group relative col-span-2 sm:col-span-2 overflow-hidden rounded-2xl bg-secondary shadow-sm">
+              <img 
+                src="https://images.unsplash.com/photo-1577416412292-747c6607f055?q=80&w=1000&auto=format&fit=crop" 
+                alt="Fasilitas dan lingkungan TBM" 
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+          </div>
+          
+          <div className="mt-4 text-center">
+            <p className="text-xs text-muted-foreground italic">
+              *Gambar saat ini menggunakan placeholder. Anda dapat menggantinya dengan foto asli dari Cloudinary atau /public nanti.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ===== LOKASI & GOOGLE MAPS ===== */}
       <section className="bg-secondary py-16 sm:py-20">
         <div className="mx-auto max-w-screen-xl px-4 sm:px-6">

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { CloudinaryImage } from '@/src/components/ui/cloudinary-image';
-import { ChevronLeft, BookOpen, MapPin, Hash, User, Calendar, BookType } from 'lucide-react';
+import { ChevronLeft, BookOpen, MapPin, Hash, Building2, Calendar, BookType } from 'lucide-react';
 import { getBookById } from '@/src/db/queries';
 import { StatusBadge } from '@/src/components/ui/status-badge';
 
@@ -122,7 +122,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
             )}
             {book.publisher && (
               <div className="flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3 py-1 text-sm text-secondary-foreground">
-                <User className="h-4 w-4" />
+                <Building2 className="h-4 w-4" />
                 {book.publisher}
               </div>
             )}
