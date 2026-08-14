@@ -71,7 +71,7 @@ export function BookTable({ books }: BookTableProps) {
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     {book.coverUrl ? (
-                      <div className="hidden relative h-10 w-7 shrink-0 sm:block">
+                      <div className="relative h-10 w-7 shrink-0">
                         <CldImage
                           src={book.coverUrl}
                           alt=""
@@ -81,7 +81,7 @@ export function BookTable({ books }: BookTableProps) {
                         />
                       </div>
                     ) : (
-                      <div className="hidden h-10 w-7 shrink-0 items-center justify-center rounded border border-border bg-secondary sm:flex">
+                      <div className="flex h-10 w-7 shrink-0 items-center justify-center rounded border border-border bg-secondary">
                         <BookOpen className="h-3.5 w-3.5 text-muted-foreground/50" />
                       </div>
                     )}

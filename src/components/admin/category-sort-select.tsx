@@ -18,7 +18,7 @@ export function CategorySortSelect() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full sm:w-auto">
       <ArrowUpDown
         className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
         aria-hidden="true"
@@ -26,7 +26,7 @@ export function CategorySortSelect() {
       <select
         value={current}
         onChange={handleChange}
-        className="h-10 w-full cursor-pointer appearance-none rounded-lg border border-border bg-card pl-10 pr-10 text-sm transition-colors focus:border-primary focus:outline-none sm:w-auto"
+        className="h-10 w-full cursor-pointer appearance-none rounded-lg border border-border bg-card pl-10 pr-10 text-sm transition-colors focus:border-primary focus:outline-none"
         aria-label="Urutkan Kategori"
       >
         <option value="name_asc">Nama (A-Z)</option>
