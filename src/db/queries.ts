@@ -1,14 +1,83 @@
 import { db } from '.';
 import { books, categories } from './schema';
-import { eq, like, or, and, desc, asc, count } from 'drizzle-orm';
+import { eq, like, or, and, desc, asc, count, sql } from 'drizzle-orm';
 
 export const BOOKS_PER_PAGE = 12;
 
-/** Ambil semua kategori, diurutkan berdasarkan nama */
+/** Ambil semua kategori, diurutkan berdasarkan nama (Untuk Select/Dropdown) */
 export async function getCategories() {
-  return db.query.categories.findMany({
-    orderBy: (categories, { asc }) => [asc(categories.name)],
-  });
+  return db
+    .select()
+    .from(categories)
+    .orderBy(
+      sql`CASE WHEN ${categories.id} = 'cat_uncategorized' THEN 0 ELSE 1 END`,
+      asc(categories.name)
+    );
+}
+
+export const CATEGORIES_PER_PAGE = 10;
+
+/** Ambil kategori dengan pencarian, pengurutan, dan paginasi */
+export async function getPaginatedCategories(opts: {
+  search?: string;
+  page?: number;
+  sort?: string;
+}) {
+  const { search, page = 1, sort = 'name_asc' } = opts;
+  const offset = (page - 1) * CATEGORIES_PER_PAGE;
+
+  const conditions = [];
+
+  if (search) {
+    const term = `%${search}%`;
+    conditions.push(like(categories.name, term));
+  }
+
+  const whereClause = conditions.length > 0 ? conditions[0] : undefined;
+
+  const orderByClauses: any[] = [
+    sql`CASE WHEN ${categories.id} = 'cat_uncategorized' THEN 0 ELSE 1 END`
+  ];
+  
+  switch (sort) {
+    case 'name_desc':
+      orderByClauses.push(desc(categories.name));
+      break;
+    case 'newest':
+      orderByClauses.push(desc(categories.createdAt));
+      break;
+    case 'oldest':
+      orderByClauses.push(asc(categories.createdAt));
+      break;
+    default:
+      orderByClauses.push(asc(categories.name));
+      break;
+  }
+
+  const [data, totalResult] = await Promise.all([
+    db
+      .select()
+      .from(categories)
+      .where(whereClause)
+      .orderBy(...orderByClauses)
+      .limit(CATEGORIES_PER_PAGE)
+      .offset(offset),
+    db
+      .select({ total: count() })
+      .from(categories)
+      .where(whereClause),
+  ]);
+
+  const total = totalResult[0]?.total ?? 0;
+
+  return {
+    categories: data,
+    pagination: {
+      page,
+      totalPages: Math.ceil(total / CATEGORIES_PER_PAGE),
+      total,
+    },
+  };
 }
 
 /** Ambil buku dengan filter, pencarian, pengurutan, dan paginasi */

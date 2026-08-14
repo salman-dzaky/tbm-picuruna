@@ -1,14 +1,31 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, Tags } from 'lucide-react';
-import { getCategories } from '@/src/db/queries';
+import { getPaginatedCategories } from '@/src/db/queries';
 import { CategoryManager } from '@/src/components/admin/category-manager';
+import { SearchBar } from '@/src/components/katalog/search-bar';
+import { CategorySortSelect } from '@/src/components/admin/category-sort-select';
+import { Pagination } from '@/src/components/katalog/pagination';
 
 export const metadata = {
   title: 'Kelola Kategori | Dashboard Admin',
 };
 
-export default async function AdminKategoriPage() {
-  const categories = await getCategories();
+type AdminKategoriPageProps = {
+  searchParams: Promise<{
+    q?: string;
+    page?: string;
+    sort?: string;
+  }>;
+};
+
+export default async function AdminKategoriPage({ searchParams }: AdminKategoriPageProps) {
+  const params = await searchParams;
+  const search = params.q ?? '';
+  const sort = params.sort ?? 'name_asc';
+  const page = Math.max(1, parseInt(params.page ?? '1', 10) || 1);
+
+  const { categories, pagination } = await getPaginatedCategories({ search, page, sort });
 
   return (
     <div className="space-y-6">
@@ -33,7 +50,29 @@ export default async function AdminKategoriPage() {
         </div>
       </div>
 
+      {/* Filters Bar */}
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 sm:flex-row sm:items-center lg:w-2/3 ml-auto">
+        <Suspense fallback={null}>
+          <SearchBar />
+        </Suspense>
+        <Suspense fallback={null}>
+          <CategorySortSelect />
+        </Suspense>
+      </div>
+
       <CategoryManager categories={categories} />
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <div className="flex justify-end lg:w-2/3 ml-auto">
+          <Suspense fallback={null}>
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+            />
+          </Suspense>
+        </div>
+      )}
     </div>
   );
 }
