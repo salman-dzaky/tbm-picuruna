@@ -1,7 +1,8 @@
 import { defineConfig } from 'drizzle-kit';
 import { config } from 'dotenv';
-
-config({ path: '.env.prod' });
+// config({ path: '.env' });
+config({ path: '.env.prod',
+  override: true }); // Load .env.prod and override existing environment variables
 
 export default defineConfig({
   schema: './src/db/schema.ts',
