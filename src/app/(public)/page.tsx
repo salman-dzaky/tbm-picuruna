@@ -184,7 +184,7 @@ export default function HomePage() {
             {/* Foto Utama (Large) - 1:1 / 4:3 */}
             <div className="group relative col-span-2 row-span-2 overflow-hidden rounded-2xl bg-secondary shadow-sm">
               <img 
-                src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1200&auto=format&fit=crop" 
+                src="https://res.cloudinary.com/wqxuxdzy/image/upload/v1786778962/Rak_TBM_Picuruna_Landscape_1x1.jpg" 
                 alt="Ruang baca utama TBM" 
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -195,7 +195,7 @@ export default function HomePage() {
             {/* Foto Kecil 1 (Top Right 1) */}
             <div className="group relative col-span-2 sm:col-span-1 overflow-hidden rounded-2xl bg-secondary shadow-sm">
               <img 
-                src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=600&auto=format&fit=crop" 
+                src="https://res.cloudinary.com/wqxuxdzy/image/upload/v1786782237/TBM_Picuruna_Koleksi_Buku_1x1.jpg" 
                 alt="Koleksi buku bacaan" 
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -205,7 +205,7 @@ export default function HomePage() {
             {/* Foto Kecil 2 (Top Right 2) */}
             <div className="group relative col-span-2 sm:col-span-1 overflow-hidden rounded-2xl bg-secondary shadow-sm">
               <img 
-                src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=600&auto=format&fit=crop" 
+                src="https://res.cloudinary.com/wqxuxdzy/image/upload/v1786781926/TBM_Picuruna_Aktivitas_Membaca_1x1.jpg" 
                 alt="Kegiatan literasi" 
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -215,7 +215,7 @@ export default function HomePage() {
             {/* Foto Medium (Bottom Right) - 16:9 / Landscape */}
             <div className="group relative col-span-2 sm:col-span-2 overflow-hidden rounded-2xl bg-secondary shadow-sm">
               <img 
-                src="https://images.unsplash.com/photo-1577416412292-747c6607f055?q=80&w=1000&auto=format&fit=crop" 
+                src="https://res.cloudinary.com/wqxuxdzy/image/upload/v1786782702/TBM_Picuruna_Tampak_Depan_16x9.jpg" 
                 alt="Fasilitas dan lingkungan TBM" 
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -223,11 +223,11 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div className="mt-4 text-center">
+          {/* <div className="mt-4 text-center">
             <p className="text-xs text-muted-foreground italic">
               *Gambar saat ini menggunakan placeholder. Anda dapat menggantinya dengan foto asli dari Cloudinary atau /public nanti.
             </p>
-          </div>
+          </div> */}
         </div>
       </section>
 
