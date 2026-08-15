@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Inter } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import '../globals.css';
 
 const inter = Inter({
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="id" className={`${inter.variable} antialiased`}>
       <body className="min-h-dvh flex flex-col bg-background text-foreground font-sans">
         <ClerkProvider>{children}</ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );
