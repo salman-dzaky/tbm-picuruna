@@ -34,9 +34,8 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-5 text-base leading-relaxed text-green-100/90 sm:text-lg">
-              Menyediakan akses buku gratis untuk seluruh masyarakat.
-              Jelajahi koleksi kami dan temukan inspirasi membaca
-              untuk semua kalangan.
+              Menyediakan akses buku gratis untuk anak-anak dan seluruh masyarakat.
+              Jelajahi koleksi kami dan tumbuhkan minat baca anak anda.
             </p>
 
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -44,7 +43,7 @@ export default function HomePage() {
                 href="/katalog"
                 className="inline-flex h-11 items-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-primary shadow-sm transition-all duration-200 hover:bg-green-50 hover:shadow-md"
               >
-                Jelajahi Katalog
+                Jelajahi Daftar Buku
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <a
@@ -88,7 +87,7 @@ export default function HomePage() {
               {
                 icon: Users,
                 label: 'Pembaca Aktif',
-                value: '200+',
+                value: 'Temukan',
                 desc: 'Dari berbagai kalangan',
               },
               {
@@ -129,8 +128,8 @@ export default function HomePage() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
               Taman Baca Masyarakat (TBM) Picuruna adalah ruang baca komunitas
-              yang didirikan untuk meningkatkan minat baca dan literasi
-              masyarakat lokal. Kami menyediakan koleksi buku yang beragam —
+              yang utamanya ada untuk meningkatkan minat baca dan literasi anak-anak
+              serta seluruh masyarakat lokal. Kami menyediakan koleksi buku yang beragam —
               dari buku anak-anak, fiksi, non-fiksi, hingga ensiklopedia —
               semuanya dapat dibaca dan dipinjam secara gratis.
             </p>
@@ -175,7 +174,7 @@ export default function HomePage() {
               Galeri Kegiatan
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Momen-momen inspiratif, ruang baca, dan kegiatan literasi bersama masyarakat di TBM Picuruna.
+              Momen-momen inspiratif, ruang baca, dan kegiatan literasi bersama di TBM Picuruna.
             </p>
           </div>
           
@@ -259,8 +258,7 @@ export default function HomePage() {
           </div>
 
           <p className="mt-4 text-center text-xs text-muted-foreground">
-            * Koordinat peta bersifat ilustratif. Silakan hubungi kami untuk
-            petunjuk arah yang lebih detail.
+            * Dan ya, ini adalah lokasi asli TBM Picuruna di Google Maps. Sebuah rumah sederhana yang diubah menjadi ruang baca komunitas.
           </p>
         </div>
       </section>
@@ -274,7 +272,7 @@ export default function HomePage() {
               Mulai Jelajahi Koleksi Kami
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Temukan buku yang sesuai dengan minat dan kebutuhan Anda.
+              Temukan buku yang sesuai dengan minat anak dan kebutuhan Anda.
             </p>
             <Link
               href="/katalog"
